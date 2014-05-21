@@ -11,9 +11,9 @@ errorlevel == 1 Failed to get prices from NiceHash
 errorlevel == 0 No command line options was set for NiceHashPrices.exe or price is not good.
 
 command line options:
-	-1, --scryptPrice 		x.xx Setup lowerest price for Scrypt
-	-2, --scryptNprice 		x.xx Setup lowerest price for ScryptN
-	-3, --x11price	 		x.xx Setup lowerest price for x11
+	--scryptPrice 		x.xx Setup lowerest price for Scrypt
+	--scryptNprice 		x.xx Setup lowerest price for ScryptN
+	--x11price	 		x.xx Setup lowerest price for x11
 
 example batch file for Scrypt:
 
@@ -29,7 +29,7 @@ example batch file for Scrypt:
 
 example batch file for x11:
 	@echo off
-	NiceHashPrices.exe -3 1,2
+	NiceHashPrices.exe --x11price 1,2
 	if "%ERRORLEVEL%"=="3" (
 		echo Price for x11 is good!
 	) else if "%ERRORLEVEL%"=="1" (

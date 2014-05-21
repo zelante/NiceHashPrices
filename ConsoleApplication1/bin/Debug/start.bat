@@ -1,5 +1,5 @@
 @echo off
-NiceHashPrices.exe --scryptPrice 3,1
+NiceHashPrices.exe --x11price 1,1
 if "%ERRORLEVEL%"=="3" (
 	echo Price for Scrypt is good!
 ) else if "%ERRORLEVEL%"=="1" (
