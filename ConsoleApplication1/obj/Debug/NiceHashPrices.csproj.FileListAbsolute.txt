@@ -1,0 +1,8 @@
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\bin\Debug\CommandLine.dll
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\bin\Debug\CommandLine.xml
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\bin\Debug\NiceHashPrices.exe.config
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\bin\Debug\NiceHashPrices.exe
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\bin\Debug\NiceHashPrices.pdb
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\obj\Debug\NiceHashPrices.csprojResolveAssemblyReference.cache
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\obj\Debug\NiceHashPrices.exe
+C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\obj\Debug\NiceHashPrices.pdb
