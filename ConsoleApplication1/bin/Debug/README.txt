@@ -1,4 +1,4 @@
-NaceHashPrices 0.1 (05/21/2014)
+NaceHashPrices 0.2 (05/26/2014)
 by Zelante
 Donation:
 BTC 1AiT1j185rZ7cokrGrszZJLWAktaFszCUR
@@ -11,14 +11,15 @@ errorlevel == 1 Failed to get prices from NiceHash
 errorlevel == 0 No command line options was set for NiceHashPrices.exe or price is not good.
 
 command line options:
-	--scryptPrice 		x.xx Setup lowerest price for Scrypt
-	--scryptNprice 		x.xx Setup lowerest price for ScryptN
-	--x11price	 		x.xx Setup lowerest price for x11
+	--scryptPrice 		x.xxxx Setup lowerest price for Scrypt
+	--scryptNprice 		x.xxxx Setup lowerest price for ScryptN
+	--x11price	 		x.xxxx Setup lowerest price for x11
+	--wallet			BTC wallet for payouts from nicehash
 
 example batch file for Scrypt:
 
 	@echo off
-	NiceHashPrices.exe --scryptPrice 3,1
+	NiceHashPrices.exe --scryptPrice 3.1 --wallet 1AiT1j185rZ7cokrGrszZJLWAktaFszCUR
 	if "%ERRORLEVEL%"=="3" (
 		echo Price for Scrypt is good!
 	) else if "%ERRORLEVEL%"=="1" (
@@ -29,7 +30,7 @@ example batch file for Scrypt:
 
 example batch file for x11:
 	@echo off
-	NiceHashPrices.exe --x11price 1,2
+	NiceHashPrices.exe --x11price 1.2 --wallet 1AiT1j185rZ7cokrGrszZJLWAktaFszCUR
 	if "%ERRORLEVEL%"=="3" (
 		echo Price for x11 is good!
 	) else if "%ERRORLEVEL%"=="1" (

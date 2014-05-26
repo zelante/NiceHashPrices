@@ -6,3 +6,13 @@ C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\bin\Debu
 C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\obj\Debug\NiceHashPrices.csprojResolveAssemblyReference.cache
 C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\obj\Debug\NiceHashPrices.exe
 C:\Mining\Source\GetWebPageInfo\ConsoleApplication1\ConsoleApplication1\obj\Debug\NiceHashPrices.pdb
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\NiceHashPrices.exe.config
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\obj\Debug\NiceHashPrices.exe
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\obj\Debug\NiceHashPrices.pdb
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\NiceHashPrices.exe
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\NiceHashPrices.pdb
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\CommandLine.dll
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\CommandLine.xml
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\obj\Debug\NiceHashPrices.csprojResolveAssemblyReference.cache
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Администратор\Documents\GitHub\NiceHashPrices\ConsoleApplication1\bin\Debug\Newtonsoft.Json.xml
