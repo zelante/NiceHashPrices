@@ -28,7 +28,7 @@ DRK XgtrNxB4rK6pB7Y5HmqUFYAaBw9ZaNNQwm
 command line options:
 	-w,--wallet			You BTC wallet for payouts from nicehash
 
-example batch file for Scrypt:
+example batch file:
 
 	@echo off
 	NiceHashPrices.exe --wallet %wallet%
