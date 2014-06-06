@@ -13,26 +13,20 @@ namespace NiceHashPrices
     public class Options
     {
 
-      [Option('1', "scryptPrice", Required = false, HelpText = "Set x11 price.")]
-      public string scryptPrice { get; set; }
-      
-      [Option('2', "scryptNprice", Required = false, HelpText = "Set x11 diffcult.")]
-      public string scryptNprice { get; set; }
-
-      [Option('3', "x11price", Required = false, HelpText = "Set x11 miner exe file.")]
-      public string x11price { get; set; }
-
       [Option('w', "wallet", Required = false, HelpText = "Set BTC wallet for payout.")]
       public string wallet { get; set; }
 
       [HelpOption]
       public string GetUsage()
       {
-        // this without using CommandLine.Text
-        var usage = new StringBuilder();
-        usage.AppendLine("Quickstart Application 1.0");
-        usage.AppendLine("Read user manual for usage instructions...");
-        return usage.ToString();
+          // this without using CommandLine.Text
+          var usage = new StringBuilder();
+          usage.AppendLine("NiceHashPrices v 0.3 by Oleksandr Sukhina (zelante)");
+          usage.AppendLine("----------------------------------------");
+          usage.AppendLine("Usage: NiceHashPrices.exe [Options]");
+          usage.AppendLine("Options:");
+          usage.AppendLine("\t -w, --wallet \t Your BTC Wallet address for NiceHash payout");
+          return usage.ToString();
       }
     }
 
@@ -72,48 +66,84 @@ namespace NiceHashPrices
     {
         public ResultAccount result { get; set; }
         public string method { get; set; }
-    }    
+    }
 
     public static class Program
     {
+        static string datetime;
+        static double[] prices = new double[6];
+        static double[] normilizedPrices = new double[6];
+        static double[] accountBalance = new double[6];
+        static double[] rejectedSpeed = new double[6];
+        static double[] acceptedSpeed = new double[6];
+
         public static int Main(string[] args)
         {
-            double scryptPrice = 0;
-            double scryptNprice = 0;
-            double x11price = 0;
-            string wallet = "1AiT1j185rZ7cokrGrszZJLWAktaFszCUR";
-            double[] prices = new double[4];
-            double[] accountBalance = new double[4];
-            double[] rejectedSpeed = new double[4];
-            double[] acceptedSpeed = new double[4];
-
+            string wallet=" ";
+            datetime = DateTime.Now.ToString("[yyyy-MM-dd hh:mm:ss]");
+            
             ///Parse Command Line
             Options options = new Options();
             CommandLine.Parser parser = new Parser();
             if (parser.ParseArguments(args, options))
             {
                 // consume Options type properties
-                double.TryParse(options.scryptPrice, NumberStyles.Float, CultureInfo.InvariantCulture, out scryptPrice);
-                double.TryParse(options.scryptNprice, NumberStyles.Float, CultureInfo.InvariantCulture, out scryptNprice);
-                double.TryParse(options.x11price, NumberStyles.Float, CultureInfo.InvariantCulture, out x11price);
-                if (options.wallet != null) wallet = options.wallet;
+                if (options.wallet != null)
+                    wallet = options.wallet;
+                else
+                {
+                    Console.WriteLine(options.GetUsage());
+                    return 1;
+                }
             }
 
-            var url = "https://www.nicehash.com/api?method=stats.provider&addr=" + wallet;
+            var url = "http://www.nicehash.com/api?method=stats.provider&addr=" + wallet;
             var nicehashAccount = _download_serialized_json_data<RootObjectAccount>(url);
-
+            if (nicehashAccount == null) System.Environment.Exit(1);
             url = "http://www.nicehash.com/api?method=stats.global.current";
             var currencyRates = _download_serialized_json_data<RootObject>(url);
-            
+            if (currencyRates == null) System.Environment.Exit(1);
+  
+
             //  Algorithms are marked with following numbers:
             //      0 = Scrypt
             //      1 = SHA256
             //      2 = Scrypt-A.-Nfactor
             //      3 = X11
+            //      4 = X13
+            //      5 = Keccak
 
+            //  Algorithm	Profitability	Auto-Switching port
+            //  Scrypt	refference  x1   BTC/GH/Day   profitability	4333
+            //  Scrypt-N	        x0.5 BTC/GH/Day   profitability	4335
+            //  X11	                x4   BTC/GH/Day   profitability	4336
+            //  X13	                x3   BTC/GH/Day   profitability	4337
+            //  Keccak	            x500 BTC/GH/Day   profitability	4338
 
             foreach (Stat stat in currencyRates.result.stats)
+            {
                 prices[stat.algo] = double.Parse(currencyRates.result.stats[stat.algo].price, CultureInfo.InvariantCulture);
+                
+                switch (stat.algo)
+                {
+                    case 0:
+                        normilizedPrices[stat.algo] = prices[stat.algo];
+                        break;
+                    case 2:
+                        normilizedPrices[stat.algo] = prices[stat.algo]*0.5;
+                        break;
+                    case 3:
+                        normilizedPrices[stat.algo] = prices[stat.algo]*4;
+                        break;
+                    case 4:
+                        normilizedPrices[stat.algo] = prices[stat.algo]*3;
+                        break;
+                    case 5:
+                        normilizedPrices[stat.algo] = prices[stat.algo]*500;
+                        break;
+                }
+              
+            }
             
             foreach (StatAccount stat in nicehashAccount.result.stats)
             {
@@ -122,38 +152,53 @@ namespace NiceHashPrices
                 acceptedSpeed[stat.algo] = double.Parse(stat.accepted_speed, CultureInfo.InvariantCulture);
             }
 
-            string datetime = DateTime.Now.ToString("[yyyy-MM-dd hh:mm:ss]");
-            Console.Write("{0} Currently Paying BTC/GH/Day ", datetime);
-            if (scryptPrice != 0)
-                if (scryptPrice < prices[0])
-                {
-                    Console.WriteLine("(Scrypt): {0} ", prices[0]);
-                    Console.WriteLine("{0} Accepted Speed GH/s: {1}", datetime, acceptedSpeed[0]);
-                    Console.WriteLine("{0} Rejected Speed GH/s: {1}", datetime, rejectedSpeed[0]);
-                    Console.WriteLine("{0} Unpaid Balance BTC (Scrypt): {1}", datetime, accountBalance[0].ToString("N8"));
-                    return 3;
-                }
-            if (scryptNprice != 0)
-                if (scryptNprice < prices[2])
-                {
-                    Console.WriteLine("(ScryptN): {0} ", prices[2]);
-                    Console.WriteLine("{0} Accepted Speed GH/s: {1}", datetime, acceptedSpeed[2]);
-                    Console.WriteLine("{0} Rejected Speed GH/s: {1}", datetime, rejectedSpeed[2]);
-                    Console.WriteLine("{0} Unpaid Balance BTC (ScryptN): {1}", datetime, accountBalance[2].ToString("N8"));
-                    return 3;
-                }
-            if (x11price != 0)
-                if (x11price < prices[3])
-                {
-                    Console.WriteLine("(x11): {0} ", prices[3]);
-                    Console.WriteLine("{0} Accepted Speed GH/s: {1}", datetime, acceptedSpeed[3]);
-                    Console.WriteLine("{0} Rejected Speed GH/s: {1}", datetime, rejectedSpeed[3]);
-                    Console.WriteLine("{0} Unpaid Balance BTC (x11): {1}", datetime, accountBalance[3].ToString("N8"));
-                    return 3;
-                }
-            Console.WriteLine("Scrypt {0} ScryptN {1} x11 {2}", prices[0], prices[2], prices[3]);
-                
+            switch (getNormilizedMax(normilizedPrices))
+            {
+                case 0:
+                    return algoInfo(0);
+                case 2:
+                    return algoInfo(2);
+                case 3:
+                    return algoInfo(3);
+                case 4:
+                    return algoInfo(4);
+                case 5:
+                    return algoInfo(5);
+            }
+              
             return 0;
+        }
+
+        static int getNormilizedMax(double[] array) 
+        {
+            double max = array[0];
+            int index = 0;
+            for (int i = 0; i < array.Length; i++)
+                if (max < array[i])
+                {
+                    max = array[i];
+                    index = i;
+                }
+            return index;  
+        }
+
+        private static int algoInfo(int indexAlgo)
+        {
+            string[] algo = {"Scrypt", "SHA256" ,"ScryptN", "x11", "x13", "Keccak"};
+
+            Console.WriteLine("Normalized prices {0}:{1} {2}:{3} {4}:{5} {6}:{7} {8}:{9}",
+                algo[0], normilizedPrices[0],
+                algo[2], normilizedPrices[2],
+                algo[3], normilizedPrices[3],
+                algo[4], normilizedPrices[4],
+                algo[5], normilizedPrices[5]);
+
+            Console.WriteLine("----------------------[ {0} ]---------------------------------------------------", algo[indexAlgo]);
+            Console.WriteLine("{0} Currently Paying BTC/GH/Day: {1}", datetime, prices[indexAlgo]);
+            Console.WriteLine("{0} Accepted Speed GH/s: {1}", datetime, acceptedSpeed[indexAlgo]);
+            Console.WriteLine("{0} Rejected Speed GH/s: {1}", datetime, rejectedSpeed[indexAlgo]);
+            Console.WriteLine("{0} Unpaid Balance BTC: {1}", datetime, accountBalance[indexAlgo].ToString("N8"));
+            return indexAlgo;
         }
         
         private static T _download_serialized_json_data<T>(string url) where T : new()
@@ -166,7 +211,11 @@ namespace NiceHashPrices
                 {
                     json_data = w.DownloadString(url);
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    Console.WriteLine("{0} Error: Can't get API from nicehash!", datetime);
+                    System.Environment.Exit(1);
+                }
                 // if string with JSON data is not empty, deserialize it to class and return its instance 
                 return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
             }
